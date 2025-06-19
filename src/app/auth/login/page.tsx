@@ -1,22 +1,52 @@
 "use client"
 
 import { useState } from "react";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { redirect } from 'next/navigation'
+
+type LoginData = {
+  email: string
+  password: string
+}
 
 const AuthLogin = () => {
 
+  const { register, handleSubmit } = useForm<LoginData>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Register Method
-  };
+  const onSubmit = (data: LoginData) => {
+    const { email, password } = data;
 
+    if (!email || !password) return;
+
+    axios.post('/api/auth/login', {
+      email: email,
+      password: password,
+    }).then((response) => {
+      toast.success("Logado com sucesso! Redirecionando...")
+      setTimeout(() => {
+        redirect("/profile")
+      }, 2000)
+    }).catch((err) => {
+      const { message } = err.response.data;
+
+      if (message == "Campos obrigatórios ausentes.") {
+        toast.warn("Campos obrigatórios ausentes.")
+      }
+      if (message == "Credenciais Inválidas.") {
+        toast.error("E-mail ou senha incorretos.")
+      }
+    })
+
+  }
 
   return (
     <div className="w-full h-full flex items-center justify-center px-4">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-md p-10 md:p-12 bg-[var(--surface)] rounded-2xl shadow-md border border-[var(--border)] space-y-6"
       >
         <h2 className="text-2xl font-semibold text-center text-[var(--accent)]">
@@ -29,6 +59,7 @@ const AuthLogin = () => {
             E-mail
           </label>
           <input
+            {...register("email", { required: true })}
             id="email"
             type="email"
             name="email"
@@ -45,6 +76,7 @@ const AuthLogin = () => {
             Senha
           </label>
           <input
+            {...register("password", { required: true })}
             id="password"
             type="password"
             name="password"

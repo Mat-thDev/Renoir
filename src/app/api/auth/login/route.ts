@@ -7,22 +7,22 @@ export async function POST(req: Request) {
   const { email, password } = await req.json();
 
   if (!email || !password) {
-    return NextResponse.json({ message: "Missing fields" }, { status: 400 });
+    return NextResponse.json({ message: "Campos obrigatórios ausentes." }, { status: 400 });
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+    return NextResponse.json({ message: "Credenciais Inválidas." }, { status: 401 });
   }
 
   const valid = await argon2.verify(user.password, password);
   if (!valid) {
-    return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+    return NextResponse.json({ message: "Credenciais Inválidas." }, { status: 401 });
   }
 
-  const token = signJwt({ id: user.id, email: user.email });
+  const token = await signJwt({ id: user.id, email: user.email });
 
-  const response = NextResponse.json({ message: "Logged in" });
+  const response = NextResponse.json({ message: "Logado com sucesso." });
   response.cookies.set({
     name: "token",
     value: token,

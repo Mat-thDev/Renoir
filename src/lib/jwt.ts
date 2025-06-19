@@ -1,17 +1,22 @@
-var jwt = require('jsonwebtoken');
+import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 
-const SECRET = process.env.JWT_SECRET || "";
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-const signJwt = (payload: object) => {
-  return jwt.sign(payload, SECRET, { expiresIn: "1d" });
+const signJwt = async (payload: object) => {
+  return await new SignJWT({ payload })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("1d")
+    .sign(secret);
 }
 
-const verifyJwt = (token: string) => {
+const verifyJwt = async (token: string) => {
   try {
-    return jwt.verify(token, SECRET)
-  } catch {
+    const { payload } = await jwtVerify(token, secret);
+    return payload;
+  } catch (err) {
+    console.error("Erro ao verificar JWT:", err);
     return null;
   }
 }
 
-export  { signJwt, verifyJwt }
+export { signJwt, verifyJwt }

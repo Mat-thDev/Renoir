@@ -3,3 +3,4 @@ import { atomWithStorage } from "jotai/utils";
 
 //Atoms
 export const darkMode = atomWithStorage<boolean>("darkMode", true);
+export const loggedIn = atomWithStorage<boolean>("loggedIn", false);

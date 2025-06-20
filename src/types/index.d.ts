@@ -3,12 +3,39 @@ export interface UserPayload {
   email: string
 }
 
+// Post
+
+export interface PostResponse {
+  id: number;
+  authorId: number;
+  author: PostAuthor;
+  title: string;
+  content: string;
+  status: "REVIEW" | "PUBLISHED" | "DRAFT";
+  categories: Category[];
+  tags: Tag[];
+  featuredImage: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export interface Tag {
+  id: number;
+  name: string;
+}
+
 // User
 export interface UserResponse {
   user: User;
 }
 
 export interface User {
+  posts: any;
   id: number;
   username: string;
   email: string;
@@ -39,4 +66,15 @@ export interface Permission {
   name: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface PostAuthorProfile {
+  picture: string | null;
+  bio: string | null;
+}
+
+export interface PostAuthor {
+  id: number;
+  username: string;
+  profile: PostAuthorProfile;
 }

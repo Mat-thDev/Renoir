@@ -1,24 +1,48 @@
+"use client"
+
 import UserCard from "@/components/User/UserCard";
+import { formatDate } from "@/lib/formatDate";
+import type { PostResponse } from "@/types";
+import axios from "axios";
 import { Heart, Instagram } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const PostSingle = () => {
+
+  const [postData, setPostData] = useState<PostResponse | null>(null);
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      await axios.post("/api/post", { postId: 1 })
+      .then((res) => { 
+        setPostData(res.data.postData);
+      })
+    }
+
+    fetchPostData();
+  }, [])
+
+  if(postData == null) return;
+
+  console.log(postData);
+
   return (
     <article className="max-w-5xl mx-auto px-4 py-12 space-y-12">
       {/* Cabeçalho do Post */}
       <header className="space-y-4 text-center">
         <nav className="text-sm text-[var(--muted)]">
-          Home • Post • <span className="text-[var(--accent)]">Notícia</span>
+          Home • Post • <span className="text-[var(--accent)]">{postData.categories[0].name}</span>
         </nav>
         <h1 className="text-4xl font-bold text-[var(--accent)]">
-          Kimetsu no Yaiba recebe novo trailer
+          {postData.title}
         </h1>
         <div className="text-sm text-[var(--muted)] flex flex-wrap justify-center gap-2">
-          <span>Por <strong className="text-[var(--foreground)]">Misaki</strong></span>
+          <span>Por <strong className="text-[var(--foreground)]">{postData.author.username}</strong></span>
           <span>•</span>
-          <span>Notícias</span>
+          <span>{postData.categories[0].name}</span>
           <span>•</span>
-          <span>18/06/2025</span>
+          <span>{formatDate(postData.createdAt)}</span>
         </div>
       </header>
 
@@ -26,8 +50,8 @@ const PostSingle = () => {
       <div className="relative w-full h-[400px] rounded-xl overflow-hidden shadow-md">
         <Image
           fill
-          src="/image.jpg"
-          alt="Imagem de destaque da notícia"
+          src={postData.featuredImage ?? "/image.jpg"}
+          alt={postData.title ?? null}
           className="object-cover object-center"
         />
       </div>
@@ -44,12 +68,13 @@ const PostSingle = () => {
       {/* Tags */}
       <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--muted)]">
         <span className="font-semibold">Tags:</span>
-        <span className="bg-[var(--surface)] px-2 py-1 rounded-md cursor-pointer hover:bg-[var(--accent)] transition-all">Notícias</span>
-        <span className="bg-[var(--surface)] px-2 py-1 rounded-md cursor-pointer hover:bg-[var(--accent)] transition-all">Kimetsu no Yaiba</span>
+        {postData.tags.map((tag, i) => (
+          <span key={tag.id} className="bg-[var(--surface)] px-2 py-1 rounded-md cursor-pointer hover:bg-[var(--accent)] transition-all">{tag.name}</span>
+        ))}
       </div>
 
       {/* Autor */}
-      <UserCard />
+      <UserCard image={postData.author.profile.picture} username={postData.author.username} bio={postData.author.profile.bio} />
     </article>
   );
 };

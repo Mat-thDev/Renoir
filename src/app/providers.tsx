@@ -4,7 +4,7 @@ import { ProgressProvider } from '@bprogress/next/app';
 import { Bounce, Slide, ToastContainer } from 'react-toastify';
 
 import { useAtom } from "jotai";
-import { darkMode, loggedIn } from "@/storage/atom";
+import { darkMode } from "@/storage/atom";
 import { useEffect } from "react";
 import axios from 'axios';
 
@@ -15,7 +15,6 @@ type Props = {
 const Providers = ({ children }: Props) => {
 
   const [themeDark] = useAtom(darkMode);
-  const [userLogged, setUserLogged] = useAtom(loggedIn);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -23,21 +22,6 @@ const Providers = ({ children }: Props) => {
     html.classList.add(themeDark ? "dark" : "light");
   }, [themeDark]);
 
-  useEffect(() => {
-    axios.get("/api/auth/validate", {
-      withCredentials: true
-    })
-    .then((res) => {
-      const { loggedIn } = res.data;
-
-      if(loggedIn) return setUserLogged(true)
-
-      return setUserLogged(false)
-    })
-    .catch((err) => {
-      setUserLogged(false)
-    })
-  }, [userLogged])
 
   return (
     <div>

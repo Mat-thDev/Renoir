@@ -7,7 +7,7 @@ const PostFeatured = () => {
       <div className="relative w-full h-[400px] rounded-lg">
         <Image
           fill
-          src={"/image.jpg"}
+          src={"/images.jpg"}
           className="object-center object-cover w-full h-full rounded-lg"
           alt=""
         />

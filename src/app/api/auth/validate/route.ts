@@ -6,13 +6,13 @@ export async function GET(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
   if (!token) {
-    return NextResponse.json({ loggedIn: false }, { status: 401 });
+    return NextResponse.json({ loggedIn: false }, { status: 201 });
   }
 
   const validate = await verifyJwt(token) as { payload: UserPayload };
   if (!validate.payload.id) {
-    return NextResponse.json({ loggedIn: false }, { status: 401 });
+    return NextResponse.json({ loggedIn: false }, { status: 201 });
   }
 
-  return NextResponse.json({ loggedIn: true });
+  return NextResponse.json({ loggedIn: true }, { status: 201 });
 }

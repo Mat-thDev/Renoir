@@ -5,6 +5,8 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { redirect } from 'next/navigation'
+import { authStatus } from "@/storage/atom";
+import { useSetAtom } from "jotai";
 
 type LoginData = {
   email: string
@@ -16,6 +18,7 @@ const AuthLogin = () => {
   const { register, handleSubmit } = useForm<LoginData>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const setAuthStats = useSetAtom(authStatus);
 
   const onSubmit = (data: LoginData) => {
     const { email, password } = data;
@@ -27,9 +30,10 @@ const AuthLogin = () => {
       password: password,
     }).then((response) => {
       toast.success("Logado com sucesso! Redirecionando...")
+      setAuthStats(true);
       setTimeout(() => {
         redirect("/profile")
-      }, 2000)
+      }, 1000)
     }).catch((err) => {
       const { message } = err.response.data;
 

@@ -7,7 +7,7 @@ const PostCard = () => {
       <div className="relative w-full h-60 rounded-xl overflow-hidden border border-[var(--border)]">
         <Image
           fill
-          src="/image.jpg"
+          src="/images.jpg"
           alt="Imagem da notícia Kimetsu no Yaiba"
           className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
         />

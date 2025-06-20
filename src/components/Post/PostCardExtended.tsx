@@ -7,7 +7,7 @@ const PostCardExtended = () => {
       <div className="relative w-full md:w-80 h-40 rounded-xl overflow-hidden">
         <Image
           fill
-          src="/image.jpg"
+          src="/images.jpg"
           alt="Imagem da notícia Kimetsu no Yaiba"
           className="object-cover object-center"
         />
